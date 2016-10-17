@@ -13,9 +13,11 @@
 # /////////////////////////////////////////////////////
 
 
+import random
+import csv
+
 from Grid import *
 from Player import *
-from random import choice
 
 # Différentes combinaisons de touches possibles pour les contrôles, permet de choisir ses
 # touches de contrôle
@@ -41,7 +43,8 @@ def add(x, y):
 
 
 class Game:
-    def __init__(self, taille, joueur_1, joueur_2):
+    def __init__(self, joueur_1, joueur_2, taille=0,
+                 tableau_valeurs=[]):
         """
         Constructeur.
         :param taille: Taille de la grille
@@ -51,14 +54,33 @@ class Game:
 
         self.joueur_courant = 0
 
-        assert (isinstance(taille, int))
-        self.grille_jeu = Grid(taille)
-        for x in range(taille):
-            for y in range(taille):
-                self.grille_jeu[(x, y)] = choice(point)
-        self.grille_jeu[
-            (taille // 2, taille // 2)] = None  # La position initiale est mise à 0 : elle est déjà explorée.
+        if taille==0:
+            taille=len(tableau_valeurs[0])
+
+        # assert (isinstance(taille, int)) A CONSERVER OU NON ??????????????????????????????????????????????????????
+
         self.liste_joueurs = [Player(joueur_1), Player(joueur_2)]
+        print(taille)
+
+        self.grille_jeu = Grid(taille)
+
+        if tableau_valeurs == []:
+            for x in range(taille):
+                for y in range(taille):
+                    self.grille_jeu[(x, y)] = random.choice(point)
+        else:
+            i = 0
+            for ligne in tableau_valeurs:
+                j = 0
+                for colonne in ligne:
+                    self.grille_jeu[(j, i)] = tableau_valeurs[i][j]
+                    print(colonne)
+                    j += 1
+                i += 1
+
+        self.grille_jeu[
+            (taille // 2,
+             taille // 2)] = None  # La position initiale est mise à 0 : elle est déjà explorée.
 
         self.positions = [taille // 2, taille // 2]
 
@@ -168,6 +190,32 @@ class Game:
         self.liste_joueurs[1].affiche_joueur(max_length)
 
 
+def convertCSV(tableau_valeurs):
+    #on récupère la taille des lignes
+    for row in tableau_valeurs:
+        taille = len(row)
+        #comme la première ligne ne sera plus accessible on la sauvegarde
+        premiere_ligne = row
+        break
+
+    tableau_fichier = [[0 for i in range(taille)] for j in range(taille)]
+
+    for i in range(taille):
+        tableau_fichier[0][i] = int(premiere_ligne[i])
+
+    #on remplit le tableau à partir de la 2e ligne, la première ayant déjà été remplie
+    i = 1
+    for ligne in tableau_valeurs:
+        j = 0
+        for colonne in ligne:
+            tableau_fichier[i][j] = int(colonne)
+            print(colonne)
+            j += 1
+        i += 1
+
+    return(tableau_fichier)
+
+
 def gestion_jeu():
     """
     Fonction principale du jeu.
@@ -179,17 +227,31 @@ def gestion_jeu():
     nom_joueur_1 = input("Joueur 1 : quel est votre nom ? \n")
     nom_joueur_2 = input("Joueur 2 : quel est votre nom ? \n")
 
-    print("Choisissez la taille de la grille.")
+    reponse = input("Souhaitez-vous importer une grille à partir d'un fichier csv ? y/N")
 
-    # On s'assure que les paramètres donnés sont corrects.
-    while True:
-        try:
-            taille = int(input())
-            partie = Game(taille, nom_joueur_1, nom_joueur_2)
-        except ValueError:
-            print("Veuillez entrer un chiffre positif et impair.")
-        else:
-            break
+    if reponse.lower() == "y":
+        print("Pas encore complétement implémenté")
+        nom_fichier = input("Quel fichier ? (nom sans extension)")
+        nom_fichier += ".csv"
+        with open(nom_fichier) as csvfile:
+            fichier = csv.reader(csvfile, delimiter=",")
+
+            tableauFichier= convertCSV(fichier)
+            partie = Game(nom_joueur_1, nom_joueur_2, tableau_valeurs=tableauFichier)
+
+
+    else:
+        print("Choisissez la taille de la grille.")
+
+        # On s'assure que les paramètres donnés sont corrects.
+        while True:
+            try:
+                taille_demandee = int(input())
+                partie = Game(nom_joueur_1, nom_joueur_2, taille=taille_demandee)
+            except ValueError:
+                print("Veuillez entrer un chiffre positif et impair.")
+            else:
+                break
 
     partie.affichage()
 
