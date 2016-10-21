@@ -15,6 +15,7 @@
 
 import random
 import csv
+import pandas
 
 from Grid import *
 from Player import *
@@ -44,7 +45,7 @@ def add(x, y):
 
 class Game:
     def __init__(self, joueur_1, joueur_2, taille=0,
-                 tableau_valeurs=[]):
+                 tableau_valeurs=0):
         """
         Constructeur.
         :param taille: Taille de la grille
@@ -54,29 +55,24 @@ class Game:
 
         self.joueur_courant = 0
 
-        if taille==0:
-            taille=len(tableau_valeurs[0])
+        # if taille == 0:
+        #    taille = len(tableau_valeurs[0])
 
         # assert (isinstance(taille, int)) A CONSERVER OU NON ??????????????????????????????????????????????????????
 
         self.liste_joueurs = [Player(joueur_1), Player(joueur_2)]
-        print(taille)
+
+        if not isinstance(tableau_valeurs, int):
+            taille = len(tableau_valeurs)
 
         self.grille_jeu = Grid(taille)
 
-        if tableau_valeurs == []:
+        if not isinstance(tableau_valeurs, int):
+            self.grille_jeu._tableau = [[int(tableau_valeurs.as_matrix()[i][j]) for i in range(5)] for j in range(5)]
+        else:
             for x in range(taille):
                 for y in range(taille):
                     self.grille_jeu[(x, y)] = random.choice(point)
-        else:
-            i = 0
-            for ligne in tableau_valeurs:
-                j = 0
-                for colonne in ligne:
-                    self.grille_jeu[(j, i)] = tableau_valeurs[i][j]
-                    print(colonne)
-                    j += 1
-                i += 1
 
         self.grille_jeu[
             (taille // 2,
@@ -191,6 +187,10 @@ class Game:
 
 
 def convertCSV(tableau_valeurs):
+    test = list(tableau_valeurs)
+    print(test)
+
+    """
     #on récupère la taille des lignes
     for row in tableau_valeurs:
         taille = len(row)
@@ -214,6 +214,7 @@ def convertCSV(tableau_valeurs):
         i += 1
 
     return(tableau_fichier)
+    """
 
 
 def gestion_jeu():
@@ -234,10 +235,8 @@ def gestion_jeu():
         nom_fichier = input("Quel fichier ? (nom sans extension)")
         nom_fichier += ".csv"
         with open(nom_fichier) as csvfile:
-            fichier = csv.reader(csvfile, delimiter=",")
-
-            tableauFichier= convertCSV(fichier)
-            partie = Game(nom_joueur_1, nom_joueur_2, tableau_valeurs=tableauFichier)
+            fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
+            partie = Game(nom_joueur_1, nom_joueur_2, tableau_valeurs=fichier)
 
 
     else:
