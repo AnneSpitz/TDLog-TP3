@@ -55,9 +55,6 @@ class Game:
 
         self.joueur_courant = 0
 
-        # if taille == 0:
-        #    taille = len(tableau_valeurs[0])
-
         # assert (isinstance(taille, int)) A CONSERVER OU NON ??????????????????????????????????????????????????????
 
         self.liste_joueurs = [Player(joueur_1), Player(joueur_2)]
@@ -65,11 +62,13 @@ class Game:
         if not isinstance(tableau_valeurs, int):
             taille = len(tableau_valeurs)
 
-        self.grille_jeu = Grid(taille)
 
         if not isinstance(tableau_valeurs, int):
-            self.grille_jeu._tableau = [[int(tableau_valeurs.as_matrix()[i][j]) for i in range(5)] for j in range(5)]
+            print("bonjour")
+            self.grille_jeu = Grid(taille, tableau_valeurs)
         else:
+            self.grille_jeu = Grid(taille)
+
             for x in range(taille):
                 for y in range(taille):
                     self.grille_jeu[(x, y)] = random.choice(point)
@@ -186,35 +185,9 @@ class Game:
         self.liste_joueurs[1].affiche_joueur(max_length)
 
 
-def convertCSV(tableau_valeurs):
-    test = list(tableau_valeurs)
-    print(test)
+    def writeIntoCSV(self, nomFichier):
+        self.grille_jeu.writeGridIntoCSV(nomFichier)
 
-    """
-    #on récupère la taille des lignes
-    for row in tableau_valeurs:
-        taille = len(row)
-        #comme la première ligne ne sera plus accessible on la sauvegarde
-        premiere_ligne = row
-        break
-
-    tableau_fichier = [[0 for i in range(taille)] for j in range(taille)]
-
-    for i in range(taille):
-        tableau_fichier[0][i] = int(premiere_ligne[i])
-
-    #on remplit le tableau à partir de la 2e ligne, la première ayant déjà été remplie
-    i = 1
-    for ligne in tableau_valeurs:
-        j = 0
-        for colonne in ligne:
-            tableau_fichier[i][j] = int(colonne)
-            print(colonne)
-            j += 1
-        i += 1
-
-    return(tableau_fichier)
-    """
 
 
 def gestion_jeu():
@@ -238,6 +211,8 @@ def gestion_jeu():
             fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
             partie = Game(nom_joueur_1, nom_joueur_2, tableau_valeurs=fichier)
 
+        partie.affichage()
+
 
     else:
         print("Choisissez la taille de la grille.")
@@ -252,7 +227,18 @@ def gestion_jeu():
             else:
                 break
 
-    partie.affichage()
+        partie.affichage()
+
+        reponse = input("Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ? y/N")
+
+        if reponse.lower() == "y":
+            nom_fichier = input("Quel nom souhaitez-vous donner au fichier ? (nom sans extension)")
+            nom_fichier += ".csv"
+            partie.writeIntoCSV(nom_fichier)
+
+    #partie.affichage()
+
+
 
     # Boucle principale du jeu.
     while not partie.fin_partie():
