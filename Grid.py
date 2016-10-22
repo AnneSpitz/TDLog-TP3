@@ -22,9 +22,12 @@ class Grid:
         Si la taille est paire ou négative, on raise une exception.
         """
 
+        # Lorsqu'on importe le tableau de valeurs, la position centrale est mise à 0
+        # Elle sera remise à None lors de la construction du jeu
         if not (isinstance(tableau_valeurs, int)):
             matrice_valeurs=tableau_valeurs.as_matrix()
-            self._tableau = [[[int(matrice_valeurs[i][j]), 0][matrice_valeurs[i][j]=="None"] for
+            matrice_valeurs[taille//2, taille//2]=0
+            self._tableau = [[int(matrice_valeurs[i][j]) for
                               i in range(taille)] for j in range(taille)]
         elif taille % 2 == 0 or taille < 0:
             raise ValueError()
@@ -84,7 +87,7 @@ class Grid:
                 else:
                     valeur = self[(j, i)]
                     ligne_a_afficher += " {0: <{width}}{1}".format("",
-                                        ["0", str(valeur)][isinstance(valeur,int)],
+                                        ["0", str(valeur)][isinstance(valeur, int)],
                                         width=max_length - [1,len(str(valeur))][isinstance(valeur,int)])
             print(ligne_a_afficher)
         print("\n")
