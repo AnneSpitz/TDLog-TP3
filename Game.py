@@ -21,14 +21,14 @@ from Player import *
 
 # Différentes combinaisons de touches possibles pour les contrôles, permet de choisir ses
 # touches de contrôle
-tab_direction_acceptable = [{"8": [0, -1], "4": [-1, 0], "2": [0, 1], "6": [1, 0],
+tabDirectionAcceptable = [{"8": [0, -1], "4": [-1, 0], "2": [0, 1], "6": [1, 0],
                              "7": [-1, -1], "9": [1, -1], "1": [-1, 1], "3": [1, 1]},
                             {"z": [0, -1], "q": [-1, 0], "x": [0, 1], "d": [1, 0],
                              "a": [-1, -1], "e": [1, -1], "w": [-1, 1], "c": [1, 1]}]
 
-commandes_choisies = 1
+commandesChoisies = 1
 
-direction_acceptable = tab_direction_acceptable[commandes_choisies]
+directionAcceptable = tabDirectionAcceptable[commandesChoisies]
 
 
 def add(x, y):
@@ -43,41 +43,41 @@ def add(x, y):
 
 
 class Game:
-    def __init__(self, joueur_1, joueur_2, taille=0,
-                 tableau_valeurs=0):
+    def __init__(self, joueur1, joueur2, taille=0,
+                 tableauValeurs=0):
         """
         Constructeur.
         :param taille: Taille de la grille
-        :param joueur_1: Nom du premier joueur
-        :param joueur_2: Nom du deuxième joueur
+        :param joueur1: Nom du premier joueur
+        :param joueur2: Nom du deuxième joueur
         """
 
-        self.joueur_courant = 0
+        self.joueurCourant = 0
 
-        self.liste_joueurs = [Player(joueur_1), Player(joueur_2)]
+        self.listeJoueurs = [Player(joueur1), Player(joueur2)]
 
-        if not isinstance(tableau_valeurs, int):
-            taille = len(tableau_valeurs)
+        if not isinstance(tableauValeurs, int):
+            taille = len(tableauValeurs)
 
-        if not isinstance(tableau_valeurs, int):
+        if not isinstance(tableauValeurs, int):
             print("bonjour")
-            self.grille_jeu = Grid(taille, tableau_valeurs)
+            self.grilleJeu = Grid(taille, tableauValeurs)
         else:
-            self.grille_jeu = Grid(taille)
+            self.grilleJeu = Grid(taille)
 
             for x in range(taille):
                 for y in range(taille):
-                    self.grille_jeu[(x, y)] = random.choice(point)
+                    self.grilleJeu[(x, y)] = random.choice(point)
 
         # La position initiale est mise à 0 : elle est déjà explorée.
 
-        self.grille_jeu[
+        self.grilleJeu[
             (taille // 2,
              taille // 2)] = None
 
         self.positions = [taille // 2, taille // 2]
 
-    def demande_direction(self):
+    def demandeDirection(self):
         """
         Demande à l'utilisateur de rentrer une touche du clavier.
         :return: une string correspondant à la touche demandée.
@@ -87,10 +87,10 @@ class Game:
             "À {0} de jouer. \n "
             "Appuyez sur une touche parmi : "
             "{1}; {2}; {3}; {4}; {5}; {6}; {7}; {8}. Choisissez une case non vide.".format(
-                self.liste_joueurs[self.joueur_courant].get_nom(),
-                *direction_acceptable.keys()))
+                self.listeJoueurs[self.joueurCourant].getNom(),
+                *directionAcceptable.keys()))
 
-    def is_direction_non_valide(self, direction):
+    def isDirectionNonValide(self, direction):
         """
         teste si la direction demandée est incompatible ou si on peut continuer
         :return: False si la direction est correcte et qu'on peut continuer
@@ -100,43 +100,43 @@ class Game:
         print(direction)
 
 
-        if direction not in direction_acceptable.keys():
+        if direction not in directionAcceptable.keys():
             print("pas valide")
             return True
         else:
-            position_voulue = add(self.positions, direction_acceptable[direction])
-            print(position_voulue)
-            if position_voulue not in self.grille_jeu:
+            positionVoulue = add(self.positions, directionAcceptable[direction])
+            print(positionVoulue)
+            if positionVoulue not in self.grilleJeu:
                 print("TEST TA GUEULE")
                 return True
-            elif not isinstance(self.grille_jeu[position_voulue], int):
+            elif not isinstance(self.grilleJeu[positionVoulue], int):
                 return True
             else:
                 return False
 
-    def gestion_tour(self):
+    def gestionTour(self):
         """
         Permet de jouer pour le joueur courant, puis passe la main.
         :param direction: direction dans laquel le joueur veut se déplacer.
         :return: Rien
         """
 
-        direction = self.demande_direction()
+        direction = self.demandeDirection()
 
         # On demande la direction tant que celle-ci n'est pas valide.
-        while self.is_direction_non_valide(direction):
-            direction = self.demande_direction()
+        while self.isDirectionNonValide(direction):
+            direction = self.demandeDirection()
 
         # Une fois la position valide, on bouge le pion, ajoute les points, modifie la grille et change de joueur.
-        self.positions = add(self.positions, direction_acceptable[direction])
-        self.liste_joueurs[self.joueur_courant].augmente_score(
-            self.grille_jeu[self.positions])
-        self.grille_jeu[self.positions] = None
-        self.joueur_courant = (self.joueur_courant + 1) % 2
+        self.positions = add(self.positions, directionAcceptable[direction])
+        self.listeJoueurs[self.joueurCourant].augmenteScore(
+            self.grilleJeu[self.positions])
+        self.grilleJeu[self.positions] = None
+        self.joueurCourant = (self.joueurCourant + 1) % 2
 
         return None
 
-    def fin_partie(self):
+    def finPartie(self):
         """
         Permet de déterminer si la partie est finie ou non,
         c'est à dire s'il reste des directions acceptable avec des points à récupérer.
@@ -144,34 +144,34 @@ class Game:
                  False sinon.
         """
 
-        for direction in direction_acceptable.values():
-            position_testee = add(self.positions, direction)
-            if position_testee in self.grille_jeu and isinstance(
-                    self.grille_jeu[position_testee], int):
+        for direction in directionAcceptable.values():
+            positionTestee = add(self.positions, direction)
+            if positionTestee in self.grilleJeu and isinstance(
+                    self.grilleJeu[positionTestee], int):
                 return False
         return True
 
-    def resultat_partie(self):
+    def resultatPartie(self):
         """
         Affiche le résultat de la partie et renvoie le numéro du joueur vainqueur.
         :return: 1 ou 2 selon le joueur qui a gagné, None sinon.
         """
 
-        score_joueur_1 = self.liste_joueurs[0].get_score()
-        score_joueur_2 = self.liste_joueurs[1].get_score()
-        if score_joueur_1 > score_joueur_2:
+        scoreJoueur1 = self.listeJoueurs[0].getScore()
+        scoreJoueur2 = self.listeJoueurs[1].getScore()
+        if scoreJoueur1 > scoreJoueur2:
             print("Le joueur 1 a gagné ! Son score est de {} points contre {}".format(
-                str(score_joueur_1),
-                str(score_joueur_2)))
+                str(scoreJoueur1),
+                str(scoreJoueur2)))
             return 1
-        elif score_joueur_1 == score_joueur_2:
+        elif scoreJoueur1 == scoreJoueur2:
             print("Il y a une égalité ! Les deux joueurs ont {} points".format(
-                str(score_joueur_2)))
+                str(scoreJoueur2)))
             return None
         else:
             print("Le joueur 2 a gagné ! Son score est de {} points contre {}".format(
-                str(score_joueur_2),
-                str(score_joueur_1)))
+                str(scoreJoueur2),
+                str(scoreJoueur1)))
             return 2
 
     def affichage(self):
@@ -183,36 +183,36 @@ class Game:
         print("\n\n==============================================\n"
               "==============================================\n \n \n")
 
-        self.grille_jeu.affichage_grille(self.positions)
-        max_length = max(len(self.liste_joueurs[i].get_nom()) for i in {0, 1})
-        self.liste_joueurs[0].affiche_joueur(max_length)
-        self.liste_joueurs[1].affiche_joueur(max_length)
+        self.grilleJeu.affichageGrille(self.positions)
+        maxLength = max(len(self.listeJoueurs[i].getNom()) for i in {0, 1})
+        self.listeJoueurs[0].afficheJoueur(maxLength)
+        self.listeJoueurs[1].afficheJoueur(maxLength)
 
     def writeIntoCSV(self, nomFichier):
-        self.grille_jeu.writeGridIntoCSV(nomFichier)
+        self.grilleJeu.writeGridIntoCSV(nomFichier)
 
 
-def gestion_jeu():
+def gestionJeu():
     """
     Fonction principale du jeu.
     :return: Le numéro du vainqueur, ou rien en cas d'égalité.
-             Affichage du score via la fonction resultat_partie() de Game
+             Affichage du score via la fonction resultatPartie() de Game
     """
 
     # Création de la partie
-    nom_joueur_1 = input("Joueur 1 : quel est votre nom ? \n")
-    nom_joueur_2 = input("Joueur 2 : quel est votre nom ? \n")
+    nomJoueur1 = input("Joueur 1 : quel est votre nom ? \n")
+    nomJoueur2 = input("Joueur 2 : quel est votre nom ? \n")
 
     # Importation d'une grille
     reponse = input("Souhaitez-vous importer une grille à partir d'un fichier csv ? y/N")
 
     if reponse.lower() == "y":
         print("Pas encore complétement implémenté")
-        nom_fichier = input("Quel fichier ? (nom sans extension)")
-        nom_fichier += ".csv"
-        with open(nom_fichier) as csvfile:
+        nomFichier = input("Quel fichier ? (nom sans extension)")
+        nomFichier += ".csv"
+        with open(nomFichier) as csvfile:
             fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
-            partie = Game(nom_joueur_1, nom_joueur_2, tableau_valeurs=fichier)
+            partie = Game(nomJoueur1, nomJoueur2, tableauValeurs=fichier)
 
         partie.affichage()
 
@@ -224,8 +224,8 @@ def gestion_jeu():
         # On s'assure que les paramètres donnés sont corrects.
         while True:
             try:
-                taille_demandee = int(input())
-                partie = Game(nom_joueur_1, nom_joueur_2, taille=taille_demandee)
+                tailleDemandee = int(input())
+                partie = Game(nomJoueur1, nomJoueur2, taille=tailleDemandee)
             except ValueError:
                 print("Veuillez entrer un chiffre positif et impair.")
             else:
@@ -238,17 +238,17 @@ def gestion_jeu():
             "Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ? y/N")
 
         if reponse.lower() == "y":
-            nom_fichier = input(
+            nomFichier = input(
                 "Quel nom souhaitez-vous donner au fichier ? (nom sans extension)")
-            nom_fichier += ".csv"
-            partie.writeIntoCSV(nom_fichier)
+            nomFichier += ".csv"
+            partie.writeIntoCSV(nomFichier)
 
     # Boucle principale du jeu.
-    while not partie.fin_partie():
-        partie.gestion_tour()
+    while not partie.finPartie():
+        partie.gestionTour()
         partie.affichage()
 
-    return partie.resultat_partie()
+    return partie.resultatPartie()
 
 
-gestion_jeu()
+gestionJeu()

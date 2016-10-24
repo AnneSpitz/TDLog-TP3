@@ -15,7 +15,7 @@ point = [5, 10, 20, 50, 100, 200]
 
 
 class Grid:
-    def __init__(self, taille, tableau_valeurs=0):
+    def __init__(self, taille, tableauValeurs=0):
         """
         Constructeur de la classe Grid.
         :param taille de la grille souhaitée.
@@ -24,17 +24,17 @@ class Grid:
 
         # Lorsqu'on importe le tableau de valeurs, la position centrale est mise à 0
         # Elle sera remise à None lors de la construction du jeu
-        if not (isinstance(tableau_valeurs, int)):
-            matrice_valeurs = tableau_valeurs.as_matrix()
-            matrice_valeurs[taille // 2, taille // 2] = 0
-            self._tableau = [[int(matrice_valeurs[i][j]) for
+        if not (isinstance(tableauValeurs, int)):
+            matriceValeurs = tableauValeurs.as_matrix()
+            matriceValeurs[taille // 2, taille // 2] = 0
+            self._tableau = [[int(matriceValeurs[i][j]) for
                               i in range(taille)] for j in range(taille)]
         elif taille % 2 == 0 or taille < 0:
             raise ValueError()
         else:
             self._tableau = [[None for i in range(int(taille))] for i in range(taille)]
 
-    def get_taille(self):
+    def getTaille(self):
         """
         Assesseur en lecture de la taille de la grille.
         :return: Un int correspondant à la taille de la Grid.
@@ -68,29 +68,29 @@ class Grid:
         :return: True si les coordonnées x et y sont valides. False sinon.
         """
 
-        taille = self.get_taille()
+        taille = self.getTaille()
         return x[0] >= 0 and x[1] >= 0 and x[0] < taille and x[1] < taille
 
-    def affichage_grille(self, position):
+    def affichageGrille(self, position):
         """
         Affiche la grille dans la console.
         :param position: actuelle du joueur
         :return: Rien
         """
 
-        max_length = max(len(str(nombre)) for nombre in point)
-        for i in range(self.get_taille()):
-            ligne_a_afficher = ""
-            for j in range(self.get_taille()):
+        maxLength = max(len(str(nombre)) for nombre in point)
+        for i in range(self.getTaille()):
+            ligneAAfficher = ""
+            for j in range(self.getTaille()):
                 if [j, i] == position:
-                    ligne_a_afficher += " {0}".format("#" * max_length)
+                    ligneAAfficher += " {0}".format("#" * maxLength)
                 else:
                     valeur = self[(j, i)]
-                    ligne_a_afficher += " {0: <{width}}{1}".format("",
+                    ligneAAfficher += " {0: <{width}}{1}".format("",
                                                                    ["0", str(valeur)][isinstance(valeur, int)],
-                                                                   width=max_length - [1, len(str(valeur))][
+                                                                   width=maxLength - [1, len(str(valeur))][
                                                                        isinstance(valeur, int)])
-            print(ligne_a_afficher)
+            print(ligneAAfficher)
         print("\n")
         return None
 
