@@ -14,17 +14,15 @@
 
 
 import random
-import pandas
-
-from Grid import *
-from Player import *
+import Grid
+import Player
 
 # Différentes combinaisons de touches possibles pour les contrôles, permet de choisir ses
 # touches de contrôle
 tabDirectionAcceptable = [{"8": [0, -1], "4": [-1, 0], "2": [0, 1], "6": [1, 0],
-                             "7": [-1, -1], "9": [1, -1], "1": [-1, 1], "3": [1, 1]},
-                            {"z": [0, -1], "q": [-1, 0], "x": [0, 1], "d": [1, 0],
-                             "a": [-1, -1], "e": [1, -1], "w": [-1, 1], "c": [1, 1]}]
+                           "7": [-1, -1], "9": [1, -1], "1": [-1, 1], "3": [1, 1]},
+                          {"z": [0, -1], "q": [-1, 0], "x": [0, 1], "d": [1, 0],
+                           "a": [-1, -1], "e": [1, -1], "w": [-1, 1], "c": [1, 1]}]
 
 commandesChoisies = 1
 
@@ -54,20 +52,19 @@ class Game:
 
         self.joueurCourant = 0
 
-        self.listeJoueurs = [Player(joueur1), Player(joueur2)]
+        self.listeJoueurs = [Player.Player(joueur1), Player.Player(joueur2)]
 
         if not isinstance(tableauValeurs, int):
             taille = len(tableauValeurs)
 
         if not isinstance(tableauValeurs, int):
-            print("bonjour")
-            self.grilleJeu = Grid(taille, tableauValeurs)
+            self.grilleJeu = Grid.Grid(taille, tableauValeurs)
         else:
-            self.grilleJeu = Grid(taille)
+            self.grilleJeu = Grid.Grid(taille)
 
             for x in range(taille):
                 for y in range(taille):
-                    self.grilleJeu[(x, y)] = random.choice(point)
+                    self.grilleJeu[(x, y)] = random.choice(Grid.point)
 
         # La position initiale est mise à 0 : elle est déjà explorée.
 
@@ -96,25 +93,19 @@ class Game:
         :return: False si la direction est correcte et qu'on peut continuer
                  True si la direction n'est pas correcte et qu'il faut redemander
         """
-        print(self.positions)
-        print(direction)
-
 
         if direction not in directionAcceptable.keys():
-            print("pas valide")
             return True
         else:
             positionVoulue = add(self.positions, directionAcceptable[direction])
-            print(positionVoulue)
             if positionVoulue not in self.grilleJeu:
-                print("TEST TA GUEULE")
                 return True
             elif not isinstance(self.grilleJeu[positionVoulue], int):
                 return True
             else:
                 return False
 
-    def gestionTour(self):
+    def gestionTourHumain(self):
         """
         Permet de jouer pour le joueur courant, puis passe la main.
         :param direction: direction dans laquel le joueur veut se déplacer.
@@ -190,65 +181,3 @@ class Game:
 
     def writeIntoCSV(self, nomFichier):
         self.grilleJeu.writeGridIntoCSV(nomFichier)
-
-
-def gestionJeu():
-    """
-    Fonction principale du jeu.
-    :return: Le numéro du vainqueur, ou rien en cas d'égalité.
-             Affichage du score via la fonction resultatPartie() de Game
-    """
-
-    # Création de la partie
-    nomJoueur1 = input("Joueur 1 : quel est votre nom ? \n")
-    nomJoueur2 = input("Joueur 2 : quel est votre nom ? \n")
-
-    # Importation d'une grille
-    reponse = input("Souhaitez-vous importer une grille à partir d'un fichier csv ? y/N")
-
-    if reponse.lower() == "y":
-        print("Pas encore complétement implémenté")
-        nomFichier = input("Quel fichier ? (nom sans extension)")
-        nomFichier += ".csv"
-        with open(nomFichier) as csvfile:
-            fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
-            partie = Game(nomJoueur1, nomJoueur2, tableauValeurs=fichier)
-
-        partie.affichage()
-
-
-    # génération d'une partie avec grille aléatoire
-    else:
-        print("Choisissez la taille de la grille.")
-
-        # On s'assure que les paramètres donnés sont corrects.
-        while True:
-            try:
-                tailleDemandee = int(input())
-                partie = Game(nomJoueur1, nomJoueur2, taille=tailleDemandee)
-            except ValueError:
-                print("Veuillez entrer un chiffre positif et impair.")
-            else:
-                break
-
-        partie.affichage()
-
-        # Possibilité d'exporter la grille générée aléatoirement
-        reponse = input(
-            "Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ? y/N")
-
-        if reponse.lower() == "y":
-            nomFichier = input(
-                "Quel nom souhaitez-vous donner au fichier ? (nom sans extension)")
-            nomFichier += ".csv"
-            partie.writeIntoCSV(nomFichier)
-
-    # Boucle principale du jeu.
-    while not partie.finPartie():
-        partie.gestionTour()
-        partie.affichage()
-
-    return partie.resultatPartie()
-
-
-gestionJeu()
