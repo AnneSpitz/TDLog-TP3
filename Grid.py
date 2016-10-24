@@ -13,6 +13,7 @@
 # /////////////////////////////////////////////////////
 point = [5, 10, 20, 50, 100, 200]
 
+import customExceptions
 
 class Grid:
     def __init__(self, taille, tableauValeurs=0):
@@ -29,8 +30,10 @@ class Grid:
             matriceValeurs[taille // 2, taille // 2] = 0
             self._tableau = [[int(matriceValeurs[i][j]) for
                               i in range(taille)] for j in range(taille)]
-        elif taille % 2 == 0 or taille < 0:
-            raise ValueError()
+        elif taille < 0:
+            raise customExceptions.TailleNegativeError()
+        elif taille % 2 == 0:
+            raise customExceptions.TaillePaireError()
         else:
             self._tableau = [[None for i in range(int(taille))] for i in range(taille)]
 

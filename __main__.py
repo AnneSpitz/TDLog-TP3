@@ -15,6 +15,7 @@
 import IA
 import Game
 import pandas
+import customExceptions
 
 
 def demandeJoueurs():
@@ -67,6 +68,10 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
                 partie = Game.Game(nomJoueur1, nomJoueur2, taille=tailleDemandee)
             except ValueError:
                 print("Veuillez entrer un chiffre positif et impair.")
+            except customExceptions.TailleNegativeError:
+                print("Vous avez entré une taille négative. Veuillez entrer un chiffre positif et impair.")
+            except customExceptions.TaillePaireError:
+                print("Vous avez entré une taille paire. Veuillez entrer un chiffre positif et impair.")
             else:
                 break
 
