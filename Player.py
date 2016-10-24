@@ -16,40 +16,44 @@
 class Player:
     def __init__(self, nom):
         """
-        Constructeur. _score commence à zéro quoi qu'il arrive.
-        :param nom:
+        Constructeur.
+        _score commence à zéro quoi qu'il arrive.
+        :param nom: (str) Nom du joueur.
         """
 
         self._score = 0
         self._nom = nom
 
-    def get_nom(self):
+    def getNom(self):
         """
-        Assesseur en lecture du nom du joueur
+        Assesseur en lecture du nom du joueur.
+        :return: Le nom du joueur (str).
         """
+
         return self._nom
 
-    def get_score(self):
+    def getScore(self):
         """
         Assesseur en lecture du score du joueur.
+        :return: Le score du joueur (int).
         """
 
         return self._score
 
-    def augmente_score(self, valeur):
+    def augmenteScore(self, valeur):
         """
         Permet d'incrémenter (uniquement) le score du joueur
-        :param valeur: nombre dont on veut augmenter le score
-        :return: Rien
+        :param valeur: (int) Valeur dont on veut augmenter le score du joueur.
+        :return: Rien.
         """
 
         self._score += valeur
 
-    def affiche_joueur(self, max_taille_nom):
+    def afficheJoueur(self, maxTailleNom):
         """
         Affiche les noms des joueurs et leurs scores.
-        :return: Rien
+        :return: Rien.
         """
 
-        print("{0: <{width}} : {1}".format(self.get_nom(), self.get_score(),
-                                           width=max_taille_nom - len(self.get_nom())))
+        print("{0: <{width}} : {1}".format(self.getNom(), self.getScore(),
+                                           width=maxTailleNom - len(self.getNom())))
