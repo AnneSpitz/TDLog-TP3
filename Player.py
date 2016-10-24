@@ -3,12 +3,12 @@
 
 # /////////////////////////////////////////////////////
 #
-# TP2 du module de Techniques de Développement LOGiciel
+# TP3 du module de Techniques de Développement LOGiciel
 #
 # Groupe 3
 # TP réalisé par RIU Clément et SPITZ Anne
 #
-# Rendu le 14 octobre 2016
+# Rendu le 26 octobre 2016
 #
 # /////////////////////////////////////////////////////
 

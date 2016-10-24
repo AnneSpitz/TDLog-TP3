@@ -3,19 +3,21 @@
 
 # /////////////////////////////////////////////////////
 #
-# TP2 du module de Techniques de Développement LOGiciel
+# TP3 du module de Techniques de Développement LOGiciel
 #
 # Groupe 3
 # TP réalisé par RIU Clément et SPITZ Anne
 #
-# Rendu le 14 octobre 2016
+# Rendu le 26 octobre 2016
 #
 # /////////////////////////////////////////////////////
 
 
+import random
+import pandas
+
 from Grid import *
 from Player import *
-from random import choice
 
 # Différentes combinaisons de touches possibles pour les contrôles, permet de choisir ses
 # touches de contrôle
@@ -41,7 +43,8 @@ def add(x, y):
 
 
 class Game:
-    def __init__(self, taille, joueur_1, joueur_2):
+    def __init__(self, joueur_1, joueur_2, taille=0,
+                 tableau_valeurs=0):
         """
         Constructeur.
         :param taille: Taille de la grille
@@ -51,14 +54,26 @@ class Game:
 
         self.joueur_courant = 0
 
-        assert (isinstance(taille, int))
-        self.grille_jeu = Grid(taille)
-        for x in range(taille):
-            for y in range(taille):
-                self.grille_jeu[(x, y)] = choice(point)
-        self.grille_jeu[
-            (taille // 2, taille // 2)] = None  # La position initiale est mise à 0 : elle est déjà explorée.
         self.liste_joueurs = [Player(joueur_1), Player(joueur_2)]
+
+        if not isinstance(tableau_valeurs, int):
+            taille = len(tableau_valeurs)
+
+        if not isinstance(tableau_valeurs, int):
+            print("bonjour")
+            self.grille_jeu = Grid(taille, tableau_valeurs)
+        else:
+            self.grille_jeu = Grid(taille)
+
+            for x in range(taille):
+                for y in range(taille):
+                    self.grille_jeu[(x, y)] = random.choice(point)
+
+        # La position initiale est mise à 0 : elle est déjà explorée.
+
+        self.grille_jeu[
+            (taille // 2,
+             taille // 2)] = None
 
         self.positions = [taille // 2, taille // 2]
 
@@ -173,6 +188,9 @@ class Game:
         self.liste_joueurs[0].affiche_joueur(max_length)
         self.liste_joueurs[1].affiche_joueur(max_length)
 
+    def writeIntoCSV(self, nomFichier):
+        self.grille_jeu.writeGridIntoCSV(nomFichier)
+
 
 def gestion_jeu():
     """
@@ -185,19 +203,45 @@ def gestion_jeu():
     nom_joueur_1 = input("Joueur 1 : quel est votre nom ? \n")
     nom_joueur_2 = input("Joueur 2 : quel est votre nom ? \n")
 
-    print("Choisissez la taille de la grille.")
+    # Importation d'une grille
+    reponse = input("Souhaitez-vous importer une grille à partir d'un fichier csv ? y/N")
 
-    # On s'assure que les paramètres donnés sont corrects.
-    while True:
-        try:
-            taille = int(input())
-            partie = Game(taille, nom_joueur_1, nom_joueur_2)
-        except ValueError:
-            print("Veuillez entrer un chiffre positif et impair.")
-        else:
-            break
+    if reponse.lower() == "y":
+        print("Pas encore complétement implémenté")
+        nom_fichier = input("Quel fichier ? (nom sans extension)")
+        nom_fichier += ".csv"
+        with open(nom_fichier) as csvfile:
+            fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
+            partie = Game(nom_joueur_1, nom_joueur_2, tableau_valeurs=fichier)
 
-    partie.affichage()
+        partie.affichage()
+
+
+    # génération d'une partie avec grille aléatoire
+    else:
+        print("Choisissez la taille de la grille.")
+
+        # On s'assure que les paramètres donnés sont corrects.
+        while True:
+            try:
+                taille_demandee = int(input())
+                partie = Game(nom_joueur_1, nom_joueur_2, taille=taille_demandee)
+            except ValueError:
+                print("Veuillez entrer un chiffre positif et impair.")
+            else:
+                break
+
+        partie.affichage()
+
+        # Possibilité d'exporter la grille générée aléatoirement
+        reponse = input(
+            "Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ? y/N")
+
+        if reponse.lower() == "y":
+            nom_fichier = input(
+                "Quel nom souhaitez-vous donner au fichier ? (nom sans extension)")
+            nom_fichier += ".csv"
+            partie.writeIntoCSV(nom_fichier)
 
     # Boucle principale du jeu.
     while not partie.fin_partie():
