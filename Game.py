@@ -3,18 +3,17 @@
 
 # /////////////////////////////////////////////////////
 #
-# TP2 du module de Techniques de Développement LOGiciel
+# TP3 du module de Techniques de Développement LOGiciel
 #
 # Groupe 3
 # TP réalisé par RIU Clément et SPITZ Anne
 #
-# Rendu le 14 octobre 2016
+# Rendu le 26 octobre 2016
 #
 # /////////////////////////////////////////////////////
 
 
 import random
-import csv
 import pandas
 
 from Grid import *
@@ -55,13 +54,10 @@ class Game:
 
         self.joueur_courant = 0
 
-        # assert (isinstance(taille, int)) A CONSERVER OU NON ??????????????????????????????????????????????????????
-
         self.liste_joueurs = [Player(joueur_1), Player(joueur_2)]
 
         if not isinstance(tableau_valeurs, int):
             taille = len(tableau_valeurs)
-
 
         if not isinstance(tableau_valeurs, int):
             print("bonjour")
@@ -73,9 +69,11 @@ class Game:
                 for y in range(taille):
                     self.grille_jeu[(x, y)] = random.choice(point)
 
+        # La position initiale est mise à 0 : elle est déjà explorée.
+
         self.grille_jeu[
             (taille // 2,
-             taille // 2)] = None  # La position initiale est mise à 0 : elle est déjà explorée.
+             taille // 2)] = None
 
         self.positions = [taille // 2, taille // 2]
 
@@ -184,10 +182,8 @@ class Game:
         self.liste_joueurs[0].affiche_joueur(max_length)
         self.liste_joueurs[1].affiche_joueur(max_length)
 
-
     def writeIntoCSV(self, nomFichier):
         self.grille_jeu.writeGridIntoCSV(nomFichier)
-
 
 
 def gestion_jeu():
@@ -201,6 +197,7 @@ def gestion_jeu():
     nom_joueur_1 = input("Joueur 1 : quel est votre nom ? \n")
     nom_joueur_2 = input("Joueur 2 : quel est votre nom ? \n")
 
+    # Importation d'une grille
     reponse = input("Souhaitez-vous importer une grille à partir d'un fichier csv ? y/N")
 
     if reponse.lower() == "y":
@@ -214,6 +211,7 @@ def gestion_jeu():
         partie.affichage()
 
 
+    # génération d'une partie avec grille aléatoire
     else:
         print("Choisissez la taille de la grille.")
 
@@ -229,16 +227,15 @@ def gestion_jeu():
 
         partie.affichage()
 
-        reponse = input("Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ? y/N")
+        # Possibilité d'exporter la grille générée aléatoirement
+        reponse = input(
+            "Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ? y/N")
 
         if reponse.lower() == "y":
-            nom_fichier = input("Quel nom souhaitez-vous donner au fichier ? (nom sans extension)")
+            nom_fichier = input(
+                "Quel nom souhaitez-vous donner au fichier ? (nom sans extension)")
             nom_fichier += ".csv"
             partie.writeIntoCSV(nom_fichier)
-
-    #partie.affichage()
-
-
 
     # Boucle principale du jeu.
     while not partie.fin_partie():
