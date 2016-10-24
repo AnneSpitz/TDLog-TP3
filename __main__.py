@@ -15,6 +15,7 @@
 import IA
 import Game
 import pandas
+import customExceptions
 
 
 def demandeJoueurs():
@@ -27,15 +28,14 @@ def demandeJoueurs():
 
     # On demande un nombre de joueur entre 1 et 2.
     while nombreJoueur not in {"1", "2"}:
-        nombreJoueur = input("Partie à combien de joueurs ? 1/2")
+        nombreJoueur = input("Partie à combien de joueurs ?\n1/2")
 
     if nombreJoueur == "1":
-        nomJoueur1 = input("Comment vous appellez-vous ?")
+        nomJoueur1 = input("Comment vous appellez-vous ?\n")
         nomJoueur2 = "GLaDOS"  # Nom par défaut de l'IA.
-
     else:
-        nomJoueur1 = input("Nom du joueur 1 :")
-        nomJoueur2 = input("Nom du joueur 2 :")
+        nomJoueur1 = input("Nom du joueur 1 :\n")
+        nomJoueur2 = input("Nom du joueur 2 :\n")
 
     return [nombreJoueur, nomJoueur1, nomJoueur2]
 
@@ -51,11 +51,10 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
     """
 
     # On demande si on charge une partie depuis un fichier.
-    reponse = input("Souhaitez-vous importer une grille à partir d'un fichier csv ? y/N")
+    reponse = input("Souhaitez-vous importer une grille à partir d'un fichier csv ?\ny/N")
 
     if reponse.lower() == "y":
-        print("Pas encore complétement implémenté")
-        nomFichier = input("Quel fichier ? (nom sans extension)")
+        nomFichier = input("Quel fichier ? (nom sans extension)\n")
         nomFichier += ".csv"
         with open(nomFichier) as csvfile:
 
@@ -76,7 +75,10 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
 
             except ValueError:
                 print("Veuillez entrer un chiffre positif et impair.")
-
+            except customExceptions.TailleNegativeError:
+                print("Vous avez entré une taille négative. Veuillez entrer un chiffre positif et impair.")
+            except customExceptions.TaillePaireError:
+                print("Vous avez entré une taille paire. Veuillez entrer un chiffre positif et impair.")
             else:
                 break
 
@@ -91,8 +93,6 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
                 "Quel nom souhaitez-vous donner au fichier ? (nom sans extension)")
             nomFichier += ".csv"
             partie.writeIntoCSV(nomFichier)
-
-    print("Que la partie commence !\n")
 
     return partie
 
@@ -110,7 +110,6 @@ def gestionTour(partie, isIAPresente):
     if isIAPresente and partie.joueurCourant == 1:
         print(" refléchit...".format(partie.listeJoueurs[1].getNom()))
         direction = IA.choixDirectionIA(partie)
-
     else:
         direction = partie.demandeDirection()
         # On demande la direction tant que celle-ci n'est pas valide.

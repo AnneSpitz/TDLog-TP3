@@ -15,6 +15,8 @@
 # Ensemble des valeurs accessible pour les points de la grille.
 point = [5, 10, 20, 50, 100, 200]
 
+import customExceptions
+
 
 class Grid:
     def __init__(self, taille, tableauValeurs=0):
@@ -34,11 +36,12 @@ class Grid:
             self._tableau = [[int(matriceValeurs[i][j]) for i in range(taille)] for j in
                              range(taille)]
 
-        elif taille % 2 == 0 or taille < 0:
-            raise ValueError()
-
         # Dans le cas où on ne rentre pas de tableau et où la taille est conforme, on initialise
         # à None les élèments de la grille.
+        elif taille < 0:
+            raise customExceptions.TailleNegativeError()
+        elif taille % 2 == 0:
+            raise customExceptions.TaillePaireError()
         else:
             self._tableau = [[None for i in range(int(taille))] for i in range(taille)]
 
@@ -99,7 +102,7 @@ class Grid:
             for j in range(self.getTaille()):
 
                 if [j, i] == position:
-                    ligneAAfficher += " {0}".format("#" * maxLength) # On affiche le pion.
+                    ligneAAfficher += " {0}".format("#" * maxLength)  # On affiche le pion.
 
                 else:
                     valeur = self[(j, i)]
@@ -124,6 +127,5 @@ class Grid:
         """
 
         with open(nomFichier, 'w+') as csvfile:
-
             for ligne in self._tableau:
                 csvfile.write(",".join(str(elem) for elem in ligne) + "\n")
