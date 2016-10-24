@@ -26,14 +26,14 @@ def demandeJoueurs():
     nombreJoueur = 0
 
     while nombreJoueur not in {"1", "2"}:
-        nombreJoueur = input("Partie à combien de joueurs ? 1/2")
+        nombreJoueur = input("Partie à combien de joueurs ? 1/2 \n")
 
     if nombreJoueur == "1":
-        nomJoueur1 = input("Comment vous appellez-vous ?")
+        nomJoueur1 = input("Comment vous appellez-vous ? \n")
         nomJoueur2 = "GLaDOS"
     else:
-        nomJoueur1 = input("Nom du joueur 1 :")
-        nomJoueur2 = input("Nom du joueur 2 :")
+        nomJoueur1 = input("Nom du joueur 1 : \n")
+        nomJoueur2 = input("Nom du joueur 2 : \n")
 
     return [nombreJoueur, nomJoueur1, nomJoueur2]
 
@@ -46,11 +46,10 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
     :return:
     """
     #
-    reponse = input("Souhaitez-vous importer une grille à partir d'un fichier csv ? y/N")
+    reponse = input("Souhaitez-vous importer une grille à partir d'un fichier csv ? y/N \n")
 
     if reponse.lower() == "y":
-        print("Pas encore complétement implémenté")
-        nomFichier = input("Quel fichier ? (nom sans extension)")
+        nomFichier = input("Quel fichier ? (nom sans extension) \n")
         nomFichier += ".csv"
         with open(nomFichier) as csvfile:
             fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
@@ -75,28 +74,28 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
             else:
                 break
 
-    return partie
+        partie.affichage()
 
+        # Possibilité d'exporter la grille générée aléatoirement
+        print("==============================================\n"
+              "==============================================\n")
+        reponse = input(
+            "Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ? y/N \n")
 
-def initialisationPartie(partie):
-    """
+        if reponse.lower() == "y":
+            nomFichier = input(
+                "Quel nom souhaitez-vous donner au fichier ? (nom sans extension) \n")
+            nomFichier += ".csv"
+            partie.writeIntoCSV(nomFichier)
 
-    :param partie:
-    :return:
-    """
-    partie.affichage()
-
-    # Possibilité d'exporter la grille générée aléatoirement
-    reponse = input(
-        "Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ? y/N")
-
-    if reponse.lower() == "y":
-        nomFichier = input(
-            "Quel nom souhaitez-vous donner au fichier ? (nom sans extension)")
-        nomFichier += ".csv"
-        partie.writeIntoCSV(nomFichier)
+        print("==============================================\n"
+              "==============================================")
 
     print("Que la partie commence !\n")
+
+    partie.affichage()
+
+    return partie
 
 
 def gestionTour(partie, isIAPresente):
@@ -107,7 +106,7 @@ def gestionTour(partie, isIAPresente):
     """
     if isIAPresente and partie.joueurCourant == 1:
         direction = IA.choixDirectionIA(partie)
-        print(" refléchie...".format(partie.listeJoueurs[1].getNom()))
+        print(" refléchit...".format(partie.listeJoueurs[1].getNom()))
     else:
         direction = partie.demandeDirection()
         # On demande la direction tant que celle-ci n'est pas valide.
@@ -140,8 +139,6 @@ def gestionJeu(partie, isIAPresente):
 informationJoueurs = demandeJoueurs()
 
 partie = creationOuImportationPartie(informationJoueurs[1], informationJoueurs[2])
-
-initialisationPartie(partie)
 
 if informationJoueurs[0] == "1":
     isIAPresente = True
