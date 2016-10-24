@@ -19,20 +19,6 @@ import copy
 profondeurMax = 4
 
 
-def mouvement(partie, direction):
-    """
-
-    :param partie:
-    :param direction:
-    :return:
-    """
-    # Une fois la position valide, on bouge le pion, ajoute les points, modifie la grille et change de joueur.
-    partie.positions = Game.add(partie.positions, Game.directionAcceptable[direction])
-    partie.listeJoueurs[partie.joueurCourant].augmenteScore(partie.grilleJeu[partie.positions])
-    partie.grilleJeu[partie.positions] = None
-    partie.joueurCourant = (partie.joueurCourant + 1) % 2
-
-
 def minMax(partie, profondeur, isMax, indiceJoueurIA):
     """
 
@@ -49,7 +35,7 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
             for direction in Game.directionAcceptable:
                 if not partie.isDirectionNonValide(direction):
                     partieLocal = copy.deepcopy(partie)
-                    mouvement(partieLocal, direction)
+                    partieLocal.modifiePostion(direction)
                     valeur = max(valeur, minMax(partieLocal, profondeur - 1, False, indiceJoueurIA))
             return int(valeur)
         else:
@@ -57,7 +43,7 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
             for direction in Game.directionAcceptable:
                 if not partie.isDirectionNonValide(direction):
                     partieLocal = copy.deepcopy(partie)
-                    mouvement(partieLocal, direction)
+                    partieLocal.modifiePostion(direction)
                     valeur = min(valeur, minMax(partieLocal, profondeur - 1, True, indiceJoueurIA))
             return int(valeur)
 
@@ -74,23 +60,9 @@ def choixDirectionIA(partie):
     for direction in Game.directionAcceptable:
         partieLocal = copy.deepcopy(partie)
         if not partieLocal.isDirectionNonValide(direction):
-            mouvement(partieLocal, direction)
+            partieLocal.modifiePostion(direction)
             score[minMax(partieLocal, profondeurMax, False, indiceJoueurIA)] = direction
     print(score)
     maxScore = max (score.keys())
     print(maxScore)
     return score[maxScore]
-
-
-def gestionTourIA(partie):
-    """
-    :param partie:
-    :return:
-    """
-    direction = choixDirectionIA(partie)
-    print("DIRECTION DE GLaDOS : ", direction)
-    # Une fois la position valide, on bouge le pion, ajoute les points, modifie la grille et change de joueur.
-    partie.positions = Game.add(partie.positions, Game.directionAcceptable[direction])
-    partie.listeJoueurs[partie.joueurCourant].augmenteScore(partie.grilleJeu[partie.positions])
-    partie.grilleJeu[partie.positions] = None
-    partie.joueurCourant = (partie.joueurCourant + 1) % 2

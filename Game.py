@@ -105,27 +105,16 @@ class Game:
             else:
                 return False
 
-    def gestionTourHumain(self):
+    def modifiePostion(self, direction):
         """
-        Permet de jouer pour le joueur courant, puis passe la main.
-        :param direction: direction dans laquel le joueur veut se déplacer.
-        :return: Rien
+        
+        :param direction: 
+        :return: 
         """
-
-        direction = self.demandeDirection()
-
-        # On demande la direction tant que celle-ci n'est pas valide.
-        while self.isDirectionNonValide(direction):
-            direction = self.demandeDirection()
-
-        # Une fois la position valide, on bouge le pion, ajoute les points, modifie la grille et change de joueur.
         self.positions = add(self.positions, directionAcceptable[direction])
-        self.listeJoueurs[self.joueurCourant].augmenteScore(
-            self.grilleJeu[self.positions])
+        self.listeJoueurs[self.joueurCourant].augmenteScore(self.grilleJeu[self.positions])
         self.grilleJeu[self.positions] = None
         self.joueurCourant = (self.joueurCourant + 1) % 2
-
-        return None
 
     def finPartie(self):
         """
@@ -150,19 +139,22 @@ class Game:
 
         scoreJoueur1 = self.listeJoueurs[0].getScore()
         scoreJoueur2 = self.listeJoueurs[1].getScore()
+        nomJoueur1 = self.listeJoueurs[0].getNom()
+        nomJoueur2 = self.listeJoueurs[1].getNom()
+
         if scoreJoueur1 > scoreJoueur2:
-            print("Le joueur 1 a gagné ! Son score est de {} points contre {}".format(
-                str(scoreJoueur1),
-                str(scoreJoueur2)))
+            print("{} a gagné ! Son score est de {} points contre {}".format(nomJoueur1,
+                                                                             str(scoreJoueur1),
+                                                                             str(scoreJoueur2)))
             return 1
         elif scoreJoueur1 == scoreJoueur2:
             print("Il y a une égalité ! Les deux joueurs ont {} points".format(
                 str(scoreJoueur2)))
             return None
         else:
-            print("Le joueur 2 a gagné ! Son score est de {} points contre {}".format(
-                str(scoreJoueur2),
-                str(scoreJoueur1)))
+            print("{} a gagné ! Son score est de {} points contre {}".format(nomJoueur2,
+                                                                             str(scoreJoueur2),
+                                                                             str(scoreJoueur1)))
             return 2
 
     def affichage(self):
