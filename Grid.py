@@ -62,7 +62,7 @@ class Grid:
         """
 
         taille = self.get_taille()
-        return x[0] * x[1] >= 0 and x[0] < taille and x[1] < taille
+        return x[0] >= 0 and x[1] >= 0 and x[0] < taille and x[1] < taille
 
     def affichage_grille(self, position):
         """
@@ -80,9 +80,9 @@ class Grid:
                 else:
                     valeur = self[(j, i)]
                     ligne_a_afficher += " {0: <{width}}{1}".format("",
-                                        ["0", str(valeur)][isinstance(valeur, int)],
-                                        width=max_length - [1, len(str(valeur))][
-                                        isinstance(valeur, int)])
+                                                                   ["0", str(valeur)][isinstance(valeur, int)],
+                                                                   width=max_length - [1, len(str(valeur))][
+                                                                       isinstance(valeur, int)])
             print(ligne_a_afficher)
         print("\n")
         return None

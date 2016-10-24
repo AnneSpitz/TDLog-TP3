@@ -81,12 +81,18 @@ class Game:
         :return: False si la direction est correcte et qu'on peut continuer
                  True si la direction n'est pas correcte et qu'il faut redemander
         """
+        print(self.positions)
+        print(direction)
+
 
         if direction not in direction_acceptable.keys():
+            print("pas valide")
             return True
         else:
             position_voulue = add(self.positions, direction_acceptable[direction])
+            print(position_voulue)
             if position_voulue not in self.grille_jeu:
+                print("TEST TA GUEULE")
                 return True
             elif not isinstance(self.grille_jeu[position_voulue], int):
                 return True
