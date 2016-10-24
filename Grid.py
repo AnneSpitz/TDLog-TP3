@@ -3,26 +3,33 @@
 
 # /////////////////////////////////////////////////////
 #
-# TP2 du module de Techniques de Développement LOGiciel
+# TP3 du module de Techniques de Développement LOGiciel
 #
 # Groupe 3
 # TP réalisé par RIU Clément et SPITZ Anne
 #
-# Rendu le 14 octobre 2016
+# Rendu le 26 octobre 2016
 #
 # /////////////////////////////////////////////////////
 point = [5, 10, 20, 50, 100, 200]
 
 
 class Grid:
-    def __init__(self, taille):
+    def __init__(self, taille, tableau_valeurs=0):
         """
         Constructeur de la classe Grid.
         :param taille de la grille souhaitée.
         Si la taille est paire ou négative, on raise une exception.
         """
 
-        if taille % 2 == 0 or taille < 0:
+        # Lorsqu'on importe le tableau de valeurs, la position centrale est mise à 0
+        # Elle sera remise à None lors de la construction du jeu
+        if not (isinstance(tableau_valeurs, int)):
+            matrice_valeurs=tableau_valeurs.as_matrix()
+            matrice_valeurs[taille//2, taille//2]=0
+            self._tableau = [[int(matrice_valeurs[i][j]) for
+                              i in range(taille)] for j in range(taille)]
+        elif taille % 2 == 0 or taille < 0:
             raise ValueError()
         else:
             self._tableau = [[None for i in range(int(taille))] for i in range(taille)]
@@ -81,8 +88,12 @@ class Grid:
                     valeur = self[(j, i)]
                     ligne_a_afficher += " {0: <{width}}{1}".format("",
                                         ["0", str(valeur)][isinstance(valeur, int)],
-                                        width=max_length - [1, len(str(valeur))][
-                                        isinstance(valeur, int)])
+                                        width=max_length - [1,len(str(valeur))][isinstance(valeur,int)])
             print(ligne_a_afficher)
         print("\n")
         return None
+
+    def writeGridIntoCSV(self, nomFichier):
+        with open(nomFichier, 'w+') as csvfile:
+            for ligne in self._tableau:
+                csvfile.write(",".join(str(elem) for elem in ligne) + "\n")
