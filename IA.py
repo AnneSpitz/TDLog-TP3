@@ -46,7 +46,7 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
 
             # On teste toute les direction qui sont valides :
             for direction in Game.directionAcceptable:
-                if not partie.isDirectionNonValide(direction):
+                if partie.isDirectionValide(direction):
 
                     partieLocal = copy.deepcopy(partie)
                     partieLocal.modifieEtat(direction)
@@ -63,7 +63,7 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
 
             # On teste toute les direction qui sont valides :
             for direction in Game.directionAcceptable:
-                if not partie.isDirectionNonValide(direction):
+                if partie.isDirectionValide(direction):
 
                     partieLocal = copy.deepcopy(partie)
                     partieLocal.modifieEtat(direction)

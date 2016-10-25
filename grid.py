@@ -33,8 +33,8 @@ class Grid:
         if not (isinstance(tableauValeurs, int)):
             matriceValeurs = tableauValeurs.as_matrix()
             matriceValeurs[taille // 2, taille // 2] = 0
-            self._tableau = [[int(matriceValeurs[i][j]) for i in range(taille)] for j in
-                             range(taille)]
+            self._tableau = [[int(matriceValeurs[abscisse][ordonnee]) for abscisse in range(taille)]
+                             for ordonnee in range(taille)]
 
         # Dans le cas où on ne rentre pas de tableau et où la taille est conforme, on initialise
         # à None les élèments de la grille.
@@ -43,7 +43,8 @@ class Grid:
         elif taille % 2 == 0:
             raise customExceptions.TaillePaireError()
         else:
-            self._tableau = [[None for i in range(int(taille))] for i in range(taille)]
+            self._tableau = [[None for abscisse in range(int(taille))] for ordonnee in
+                             range(taille)]
 
     def getTaille(self):
         """
@@ -53,35 +54,36 @@ class Grid:
 
         return len(self._tableau)
 
-    def __getitem__(self, xy):
+    def __getitem__(self, coordonnee):
         """
-        Assesseur en lecture de la cellule de coordonnées xy.
-        :param xy: (list / tuple) Coordonnées de la cellule à lire.
+        Assesseur en lecture de la cellule de coordonnées coordonnee.
+        :param coordonnee: (list / tuple) Coordonnées de la cellule à lire.
         :return: La valeur de la cellule.
         """
 
-        assert xy in self
-        return self._tableau[xy[0]][xy[1]]
+        assert coordonnee in self
+        return self._tableau[coordonnee[0]][coordonnee[1]]
 
-    def __setitem__(self, xy, valeur):
+    def __setitem__(self, coordonnee, valeur):
         """
-        Assesseur en écriture de la cellule de coordonnées xy.
-        :param xy: (list / tuple) Coordonnées de la cellule à écrire.
+        Assesseur en écriture de la cellule de coordonnées coordonnee.
+        :param coordonnee: (list / tuple) Coordonnées de la cellule à écrire.
         :param valeur: (int) Valeur à mettre dans la cellule.
         :return: Rien.
         """
 
-        self._tableau[xy[0]][xy[1]] = valeur
+        self._tableau[coordonnee[0]][coordonnee[1]] = valeur
 
-    def __contains__(self, xy):
+    def __contains__(self, coordonnee):
         """
         Surcharge de l'opérateur in.
-        :param xy: (list / tuple) Coordonnées de la cellule à tester.
-        :return: True si les coordonnées x et y sont valides. False sinon.
+        :param coordonnee: (list / tuple) Coordonnées de la cellule à tester.
+        :return: True si les coordonnées sont valides. False sinon.
         """
 
         taille = self.getTaille()
-        return xy[0] >= 0 and xy[1] >= 0 and xy[0] < taille and xy[1] < taille
+        return coordonnee[0] >= 0 and coordonnee[1] >= 0 and coordonnee[0] < taille and \
+               coordonnee[1] < taille
 
     def affichageGrille(self, position):
         """
@@ -95,23 +97,32 @@ class Grid:
         maxLength = max(len(str(nombre)) for nombre in point)
 
         # On parcours la grille, en l'affichant par ligne.
-        for i in range(self.getTaille()):
+        for ordonnee in range(self.getTaille()):
 
             ligneAAfficher = ""
 
-            for j in range(self.getTaille()):
+            for abscisse in range(self.getTaille()):
 
-                if [j, i] == position:
+                # Si on est à la place du pion :
+                if [abscisse, ordonnee] == position:
                     ligneAAfficher += " {0}".format("#" * maxLength)  # On affiche le pion.
 
+                # Sinon on affiche la valeur, aligné à droite.
                 else:
-                    valeur = self[(j, i)]
-                    ligneAAfficher += " {0: <{width}}{1}".format("",
-                                                                 ["0", str(valeur)][
-                                                                     isinstance(valeur, int)],
-                                                                 width=maxLength -
-                                                                       [1, len(str(valeur))][
-                                                                           isinstance(valeur, int)])
+                    valeur = self[(abscisse, ordonnee)]
+
+                    # Si la case est non visitée on met la valeur.
+                    if isinstance(valeur, int):
+                        valeur_a_afficher = str(valeur)
+                        largeur_case = maxLength - len(valeur_a_afficher)
+
+                    # Sinon on met un 0.
+                    else:
+                        valeur_a_afficher = "0"
+                        largeur_case = 1
+
+                    ligneAAfficher += " {0: <{width}}{1}".format("", valeur_a_afficher,
+                                                                 width=largeur_case)
 
             print(ligneAAfficher)
 

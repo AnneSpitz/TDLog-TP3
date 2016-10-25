@@ -16,6 +16,7 @@
 import random
 import Grid
 import Player
+import outils
 
 # Différentes combinaisons de touches possibles pour les contrôles, permet de choisir ses
 # touches de contrôle, pour le moment fixé sur la deuxième combinaison.
@@ -27,17 +28,6 @@ tabDirectionAcceptable = [
 
 commandesChoisies = 1
 directionAcceptable = tabDirectionAcceptable[commandesChoisies]
-
-
-def add(x, y):
-    """
-    Permet d'additionner terme à terme deux couples ou deux tableaux.
-    :param x, y: (tuple / list) Vecteurs à additionner terme à terme.
-    :return: Renvoie le tableau des résultats sous forme de list.
-    """
-
-    assert (len(x) == len(y))
-    return [x[i] + y[i] for i in range(len(x))]
 
 
 # Classe
@@ -74,9 +64,9 @@ class Game:
 
             # Création d'une gille vide, qu'on remplie de valeurs aléatoires.
             self.grilleJeu = Grid.Grid(taille)
-            for x in range(taille):
-                for y in range(taille):
-                    self.grilleJeu[(x, y)] = random.choice(Grid.point)
+            for abscisse in range(taille):
+                for ordonnee in range(taille):
+                    self.grilleJeu[(abscisse, ordonnee)] = random.choice(Grid.point)
 
         # La position initiale est définie et mise à 0 : elle est déjà explorée.
         self.grilleJeu[(taille // 2, taille // 2)] = None
@@ -93,11 +83,25 @@ class Game:
             "{1}; {2}; {3}; {4}; {5}; {6}; {7}; {8}. Choisissez une case non vide.".format(
                 self.listeJoueurs[self.joueurCourant].getNom(), *directionAcceptable.keys()))
 
+    def isDirectionValide(self, direction):
+        """
+        Fonction qui teste si la direction demandée est compatible avec la grille actuelle.
+        Appelle simplement not isDirectionNonValide.
+        :param direction: (str) Direction selon laquelle on souhaite avancer.
+        :return: True si la direction est correcte et qu'on peut continuer.
+                 False si la direction n'est pas correcte.
+        """
+
+        return not self.isDirectionNonValide(direction)
+
     def isDirectionNonValide(self, direction):
         """
         Fonction qui teste si la direction demandée est incompatible avec la grille actuelle.
+        /!\ Attention /!\ Cette fonction doit être employée avec not pour vérifier si on peut aller
+        dans la direction demandée. Cela pour des raisons de facilité à coder la fonction.
+        :param direction: (str) Direction selon laquelle on souhaite avancer.
         :return: False si la direction est correcte et qu'on peut continuer.
-                 True si la direction n'est pas correcte et qu'il faut redemander une direction.
+                 True si la direction n'est pas correcte.
         """
 
         # On commence par véfifier si la direction n'est pas dans les directions du tableau de
@@ -107,7 +111,7 @@ class Game:
 
         else:
 
-            positionVoulue = add(self.positions, directionAcceptable[direction])
+            positionVoulue = outils.add(self.positions, directionAcceptable[direction])
             # On vérifie ensuite si la position voulue n'est pas dans le tableau :
             if positionVoulue not in self.grilleJeu:
                 return True
@@ -129,10 +133,16 @@ class Game:
 
         # Dans l'ordre : On modifie la position du pion, on augmente le score du joueur courant,
         # on passe la position précédente à "visitée" et on change de joueur.
-        self.positions = add(self.positions, directionAcceptable[direction])
-        self.listeJoueurs[self.joueurCourant].augmenteScore(self.grilleJeu[self.positions])
-        self.grilleJeu[self.positions] = None
-        self.joueurCourant = (self.joueurCourant + 1) % 2
+
+
+        self.positions = outils.add(self.positions, directionAcceptable[direction])
+
+        positions = self.positions
+        joueurCourant = self.joueurCourant
+
+        self.listeJoueurs[joueurCourant].augmenteScore(self.grilleJeu[positions])
+        self.grilleJeu[positions] = None
+        self.joueurCourant = (joueurCourant + 1) % 2
 
         return
 
@@ -147,7 +157,7 @@ class Game:
         # Dans toutes les directions possibles on vérifie qu'il y en ai au moins une d'acceptable
         #  (soit non-visitée).
         for direction in directionAcceptable.values():
-            positionTestee = add(self.positions, direction)
+            positionTestee = outils.add(self.positions, direction)
 
             if positionTestee in self.grilleJeu and isinstance(self.grilleJeu[positionTestee], int):
                 return False
@@ -156,33 +166,37 @@ class Game:
 
     def resultatPartie(self):
         """
-        Affiche le résultat de la partie et renvoie le numéro du joueur vainqueur.
-        :return: 1 ou 2 selon le joueur qui a gagné, None sinon.
+        Affiche le résultat de la partie et renvoie les numéro des joueurs vainqueurs.
+        :return: Renvoie la liste des indices des joueurs ayant gagnés.
         """
 
         # Récupération des données des joueurs.
-        scoreJoueur1 = self.listeJoueurs[0].getScore()
-        scoreJoueur2 = self.listeJoueurs[1].getScore()
-        nomJoueur1 = self.listeJoueurs[0].getNom()
-        nomJoueur2 = self.listeJoueurs[1].getNom()
+        listeJoueurs = self.listeJoueurs
+        nombreJoueurs = len(listeJoueurs)
+        scoreJoueurs = [listeJoueurs[numeroJoueur].getScore() for numeroJoueur in
+                         range(nombreJoueurs)]
+        nomJoueurs = [listeJoueurs[numeroJoueur].getNom() for numeroJoueur in
+                       range(nombreJoueurs)]
 
-        # Traitement "à la main" des différents cas dans une partie deux joueurs :
-        if scoreJoueur1 > scoreJoueur2:
-            print("{} a gagné ! Son score est de {} points contre {}".format(nomJoueur1,
-                                                                             str(scoreJoueur1),
-                                                                             str(scoreJoueur2)))
-            return 1
+        maximumEtIndice = outils.maxEtIndice(scoreJoueurs)
+        scoreMaximal = maximumEtIndice[0]
+        nombreGagnant = maximumEtIndice[1]
+        listeGagnant = maximumEtIndice[2]
 
-        elif scoreJoueur1 == scoreJoueur2:
-            print("Il y a une égalité ! Les deux joueurs ont {} points".format(
-                str(scoreJoueur2)))
-            return None
+
+        # Affichage du ou des gagnants :
+        if nombreGagnant == nombreJoueurs:
+            print("Il y a une égalité ! Les joueurs ont {} points.".format(str(scoreMaximal)))
+
+        elif nombreGagnant == 1:
+            print("{} a gagné ! Son score est de {} points.".format(nomJoueurs[listeGagnant[0]],
+                                                                    scoreMaximal))
 
         else:
-            print("{} a gagné ! Son score est de {} points contre {}".format(nomJoueur2,
-                                                                             str(scoreJoueur2),
-                                                                             str(scoreJoueur1)))
-            return 2
+            nomGagnant = [nomJoueurs[indice] for indice in listeGagnant]
+            print("Les joueurs {} ont gagné avec {} points !".format(nomGagnant, scoreMaximal))
+
+        return listeGagnant
 
     def affichage(self):
         """
@@ -194,7 +208,7 @@ class Game:
               "==============================================\n\n\n")
 
         self.grilleJeu.affichageGrille(self.positions)
-        maxLength = max(len(self.listeJoueurs[i].getNom()) for i in {0, 1}) # Permet d'aligner
+        maxLength = max(len(self.listeJoueurs[i].getNom()) for i in {0, 1})  # Permet d'aligner
         # les ":" du scores.
         self.listeJoueurs[0].afficheJoueur(maxLength)
         self.listeJoueurs[1].afficheJoueur(maxLength)
