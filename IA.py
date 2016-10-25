@@ -12,7 +12,7 @@
 #
 # /////////////////////////////////////////////////////
 
-import Game
+import game
 import math
 import copy
 
@@ -45,7 +45,7 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
             valeur = - math.inf
 
             # On teste toute les direction qui sont valides :
-            for direction in Game.directionAcceptable:
+            for direction in game.directionAcceptable:
                 if partie.isDirectionValide(direction):
 
                     partieLocal = copy.deepcopy(partie)
@@ -62,7 +62,7 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
             valeur = math.inf
 
             # On teste toute les direction qui sont valides :
-            for direction in Game.directionAcceptable:
+            for direction in game.directionAcceptable:
                 if partie.isDirectionValide(direction):
 
                     partieLocal = copy.deepcopy(partie)
@@ -88,7 +88,7 @@ def choixDirectionIA(partie):
 
     # L'IA tente toutes les directions et va choisir celle dont le minMax renvoie le plus grand
     # score.
-    for direction in Game.directionAcceptable:
+    for direction in game.directionAcceptable:
 
         # On effectue une copie profonde de la partie pour pouvoir travailler dessus.
         partieLocal = copy.deepcopy(partie)

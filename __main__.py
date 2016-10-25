@@ -13,7 +13,7 @@
 # /////////////////////////////////////////////////////
 
 import IA
-import Game
+import game
 import pandas
 import customExceptions
 
@@ -59,7 +59,7 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
         with open(nomFichier) as csvfile:
 
             fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
-            partie = Game.Game(nomJoueur1, nomJoueur2, tableauValeurs=fichier)
+            partie = game.Game(nomJoueur1, nomJoueur2, tableauValeurs=fichier)
 
         partie.affichage()
 
@@ -71,7 +71,7 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
         while True:
             try:
                 tailleDemandee = int(input())
-                partie = Game.Game(nomJoueur1, nomJoueur2, taille=tailleDemandee)
+                partie = game.Game(nomJoueur1, nomJoueur2, taille=tailleDemandee)
 
             except ValueError:
                 print("Veuillez entrer un chiffre positif et impair.")

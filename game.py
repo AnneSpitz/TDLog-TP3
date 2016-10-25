@@ -14,8 +14,8 @@
 
 
 import random
-import Grid
-import Player
+import grid
+import player
 import outils
 
 # Différentes combinaisons de touches possibles pour les contrôles, permet de choisir ses
@@ -48,7 +48,7 @@ class Game:
         self.joueurCourant = 0
 
         # On crée la liste des joueurs.
-        self.listeJoueurs = [Player.Player(joueur1), Player.Player(joueur2)]
+        self.listeJoueurs = [player.Player(joueur1), player.Player(joueur2)]
 
         # On test si le tableau de valeurs est défini par quelque chose (par défaut défini sur
         # un int, donc si ce n'est pas le cas c'est qu'on a donné une liste en entrée) :
@@ -57,16 +57,16 @@ class Game:
             # Dans le cas où un tableau est donné en entrée, on constuit une grille à partir de
             # ce tableau.
             taille = len(tableauValeurs)
-            self.grilleJeu = Grid.Grid(taille, tableauValeurs)
+            self.grilleJeu = grid.Grid(taille, tableauValeurs)
 
         # Sinon, on crée une grille aléatoire :
         else:
 
             # Création d'une gille vide, qu'on remplie de valeurs aléatoires.
-            self.grilleJeu = Grid.Grid(taille)
+            self.grilleJeu = grid.Grid(taille)
             for abscisse in range(taille):
                 for ordonnee in range(taille):
-                    self.grilleJeu[(abscisse, ordonnee)] = random.choice(Grid.point)
+                    self.grilleJeu[(abscisse, ordonnee)] = random.choice(grid.point)
 
         # La position initiale est définie et mise à 0 : elle est déjà explorée.
         self.grilleJeu[(taille // 2, taille // 2)] = None
