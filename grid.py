@@ -119,7 +119,7 @@ class Grid:
                     # Sinon on met un 0.
                     else:
                         valeur_a_afficher = "0"
-                        largeur_case = 1
+                        largeur_case = maxLength - 1
 
                     ligneAAfficher += " {0: <{width}}{1}".format("", valeur_a_afficher,
                                                                  width=largeur_case)

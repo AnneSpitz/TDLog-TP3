@@ -70,7 +70,6 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
                     # On remplace valeur si le nouveau score calculé par minMax est meilleur (
                     # plus petit), sinon on garde valeur.
                     valeur = min(valeur, minMax(partieLocal, profondeur - 1, True, indiceJoueurIA))
-
             return int(valeur)
 
 
@@ -88,6 +87,9 @@ def choixDirectionIA(partie):
 
     # L'IA tente toutes les directions et va choisir celle dont le minMax renvoie le plus grand
     # score.
+    valeurOptimale = 0
+    directionChoisie = ""
+
     for direction in game.directionAcceptable:
 
         # On effectue une copie profonde de la partie pour pouvoir travailler dessus.
@@ -95,11 +97,13 @@ def choixDirectionIA(partie):
 
         if not partieLocal.isDirectionNonValide(direction):
 
-            # On modifie la position puis on ajoute au dictionnaire la direction avec pour clef
-            # le score.
+            # On modifie la position puis on calcule la valeur du minMax.
             partieLocal.modifieEtat(direction)
-            score[minMax(partieLocal, profondeurMax, False, indiceJoueurIA)] = direction
+            valeur = minMax(partieLocal, profondeurMax, False, indiceJoueurIA)
 
-    maxScore = max(score.keys())
+            # On modifie la valeurOptimale et la direction si on a une meilleure valeur.
+            if valeur > valeurOptimale:
+                valeurOptimale = valeur
+                directionChoisie = direction
 
-    return score[maxScore]
+    return directionChoisie

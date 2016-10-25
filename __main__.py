@@ -84,9 +84,10 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
 
         partie.affichage()
 
+        print("\n\n==============================================\n")
         # Possibilité d'exporter la grille générée aléatoirement :
         reponse = input(
-            "Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ? y/N")
+            "Souhaitez-vous exporter la grille générée sous forme d'un fichier csv ?\ny/N")
 
         if reponse.lower() == "y":
             nomFichier = input(
@@ -108,7 +109,7 @@ def gestionTour(partie, isIAPresente):
 
     # S'il y a une IA, et que c'est à elle de jouer, on appelle la choixDirectionIA.
     if isIAPresente and partie.joueurCourant == 1:
-        print(" refléchit...".format(partie.listeJoueurs[1].getNom()))
+        print("{} refléchit...".format(partie.listeJoueurs[1].getNom()))
         direction = IA.choixDirectionIA(partie)
     else:
         direction = partie.demandeDirection()
