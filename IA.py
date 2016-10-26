@@ -8,13 +8,14 @@
 # Groupe 3
 # TP réalisé par RIU Clément et SPITZ Anne
 #
-# Rendu le
+# Rendu le 26 octobre 2016
 #
 # /////////////////////////////////////////////////////
 
-import game
 import math
 import copy
+
+import game
 
 profondeurMax = 4  # Définie la profondeur maximle de l'algorithme de minMax.
 
@@ -30,7 +31,7 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
     :return: Renvoie le score calculer sur le moment, sous forme de int.
     """
 
-    # Cas de base :
+    #  Cas de base :
     if partie.finPartie() or profondeur <= 0:
 
         return int(partie.listeJoueurs[indiceJoueurIA].getScore())
@@ -38,7 +39,7 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
     # Récursion :
     else:
 
-        # isMax == True correspond à un coup de l'IA, qui doit prendre le meilleur résultat
+        #  isMax == True correspond à un coup de l'IA, qui doit prendre le meilleur résultat
         # possible.
         if isMax:
 
@@ -47,12 +48,12 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
             # On teste toute les direction qui sont valides :
             for direction in game.directionAcceptable:
                 if partie.isDirectionValide(direction):
-
                     partieLocal = copy.deepcopy(partie)
                     partieLocal.modifieEtat(direction)
                     # On remplace valeur si le nouveau score calculé par minMax est meilleur (
                     # plus grand), sinon on garde valeur.
-                    valeur = max(valeur, minMax(partieLocal, profondeur - 1, False, indiceJoueurIA))
+                    valeur = max(valeur, minMax(partieLocal, profondeur - 1, False,
+                                                indiceJoueurIA))
 
             return int(valeur)
 
@@ -64,12 +65,12 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
             # On teste toute les direction qui sont valides :
             for direction in game.directionAcceptable:
                 if partie.isDirectionValide(direction):
-
                     partieLocal = copy.deepcopy(partie)
                     partieLocal.modifieEtat(direction)
                     # On remplace valeur si le nouveau score calculé par minMax est meilleur (
                     # plus petit), sinon on garde valeur.
-                    valeur = min(valeur, minMax(partieLocal, profondeur - 1, True, indiceJoueurIA))
+                    valeur = min(valeur, minMax(partieLocal, profondeur - 1, True,
+                                                indiceJoueurIA))
             return int(valeur)
 
 

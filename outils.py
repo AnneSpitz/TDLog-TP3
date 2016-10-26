@@ -13,14 +13,13 @@
 # /////////////////////////////////////////////////////
 
 
-# Fonction générique.
+
 def add(x, y):
     """
     Permet d'additionner terme à terme deux couples ou deux tableaux.
     :param x, y: (tuple / list) Vecteurs à additionner terme à terme.
     :return: Renvoie le tableau des résultats sous forme de list.
     """
-
     assert (len(x) == len(y))
     return [x[i] + y[i] for i in range(len(x))]
 

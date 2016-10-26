@@ -8,13 +8,14 @@
 # Groupe 3
 # TP réalisé par RIU Clément et SPITZ Anne
 #
-# Rendu le
+# Rendu le 26 octobre 2016
 #
 # /////////////////////////////////////////////////////
 
+import pandas
+
 import IA
 import game
-import pandas
 import customExceptions
 
 
@@ -56,15 +57,23 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
     if reponse.lower() == "y":
         nomFichier = input("Quel fichier ? (nom sans extension)\n")
         nomFichier += ".csv"
-        with open(nomFichier) as csvfile:
 
-            fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
+        try:
+            with open(nomFichier) as csvfile:
+                fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
+        # Si on ne trouve pas le fichier, on change la réponse de l'utilisateur
+        except FileNotFoundError:
+            print("Fichier non trouvé. Nous allons générer une grille aléatoire.")
+            reponse="n"
+            pass
+        else:
             partie = game.Game(nomJoueur1, nomJoueur2, tableauValeurs=fichier)
-
-        partie.affichage()
+            partie.affichage()
 
     # Génération d'une partie avec grille aléatoire si on ne lit pas de fichier.
-    else:
+    # On utilise un if et non pas un else pour permettre d'entrer dans le bloc si jamais
+    # l'utilisateur demande d'importer un fichier non trouvé (Exception FileNotFoundError)
+    if reponse.lower() != "y":
         print("Choisissez la taille de la grille.")
 
         # On s'assure que les paramètres donnés sont corrects :
@@ -76,9 +85,11 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
             except ValueError:
                 print("Veuillez entrer un chiffre positif et impair.")
             except customExceptions.TailleNegativeError:
-                print("Vous avez entré une taille négative. Veuillez entrer un chiffre positif et impair.")
+                print(
+                    "Vous avez entré une taille négative. Veuillez entrer un chiffre positif et impair.")
             except customExceptions.TaillePaireError:
-                print("Vous avez entré une taille paire. Veuillez entrer un chiffre positif et impair.")
+                print(
+                    "Vous avez entré une taille paire. Veuillez entrer un chiffre positif et impair.")
             else:
                 break
 

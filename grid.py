@@ -13,10 +13,10 @@
 # /////////////////////////////////////////////////////
 
 # Ensemble des valeurs accessible pour les points de la grille.
-point = [5, 10, 20, 50, 100, 200]
 
 import customExceptions
 
+point = [5, 10, 20, 50, 100, 200]
 
 class Grid:
     def __init__(self, taille, tableauValeurs=0):
