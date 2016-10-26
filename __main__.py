@@ -63,7 +63,7 @@ def creationOuImportationPartie(nomJoueur1, nomJoueur2):
                 fichier = pandas.read_csv(csvfile, delimiter=",", header=None)
         # Si on ne trouve pas le fichier, on change la réponse de l'utilisateur
         except FileNotFoundError:
-            print("Fichier non trouvé. Nous allons générer une grille aléatoire.")
+            print("Fichier non trouvé.\nNous allons générer une grille aléatoire.")
             reponse="n"
             pass
         else:
