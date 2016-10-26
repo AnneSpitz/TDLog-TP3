@@ -216,8 +216,8 @@ class Game:
 
     def writeIntoCSV(self, nomFichier):
         """
-
+        Permet d'enregistrer la grille dans un fichier csv en appelant la fonction
+        writeGridIntoCSV de la grille.
         :param nomFichier: (str) Nom du fichier dans lequel on veut écrire la grille de jeu.
-        :return:
         """
         self.grilleJeu.writeGridIntoCSV(nomFichier)

@@ -22,10 +22,10 @@ class Grid:
     def __init__(self, taille, tableauValeurs=0):
         """
         Constructeur de la classe Grid.
-        :param taille: (int) Taille de la grille crée. Si la taille est paire ou négative, on raise
-        une exception.
+        :param taille: (int) Taille de la grille crée. Si la taille est paire ou négative,
+               on raise une exception.
         :param tableauValeurs: (list) Défini à 0 par défaut, si on rentre une list dedans,
-        le type ne sera plus int et la grille sera défini par tableauValeurs.
+               le type ne sera plus int et la grille sera défini par tableauValeurs.
         """
 
         # Lorsqu'on importe le tableau de valeurs, la position centrale est mise à 0

@@ -23,10 +23,10 @@ profondeurMax = 4  # Définie la profondeur maximle de l'algorithme de minMax.
 def minMax(partie, profondeur, isMax, indiceJoueurIA):
     """
     Applique l'algorithme de min-max à partie, sur profondeur itération.
-    :param partie: (Game) Doit être une copie de la vraie partie sur laquelle doit s'appliquer le
-    calcul du min-max.
-    :param profondeur: (int) Nombre d'itération maximale. Si profondeur = 0 on passe dans le cas de
-    base.
+    :param partie: (Game) Doit être une copie de la vraie partie sur laquelle doit
+           s'appliquer le calcul du min-max.
+    :param profondeur: (int) Nombre d'itération maximale. Si profondeur = 0 on passe dans
+           le cas de base.
     :param isMax: (bool) Si isMax est vrai on cherche le plus grand résultat, sinon le plus faible.
     :return: Renvoie le score calculer sur le moment, sous forme de int.
     """
@@ -50,8 +50,8 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
                 if partie.isDirectionValide(direction):
                     partieLocal = copy.deepcopy(partie)
                     partieLocal.modifieEtat(direction)
-                    # On remplace valeur si le nouveau score calculé par minMax est meilleur (
-                    # plus grand), sinon on garde valeur.
+                    # On remplace valeur si le nouveau score calculé par minMax est meilleur
+                    # (plus grand), sinon on garde valeur.
                     valeur = max(valeur, minMax(partieLocal, profondeur - 1, False,
                                                 indiceJoueurIA))
 
@@ -67,8 +67,8 @@ def minMax(partie, profondeur, isMax, indiceJoueurIA):
                 if partie.isDirectionValide(direction):
                     partieLocal = copy.deepcopy(partie)
                     partieLocal.modifieEtat(direction)
-                    # On remplace valeur si le nouveau score calculé par minMax est meilleur (
-                    # plus petit), sinon on garde valeur.
+                    # On remplace valeur si le nouveau score calculé par minMax est meilleur
+                    # (plus petit), sinon on garde valeur.
                     valeur = min(valeur, minMax(partieLocal, profondeur - 1, True,
                                                 indiceJoueurIA))
             return int(valeur)
@@ -86,8 +86,8 @@ def choixDirectionIA(partie):
     # On sauvegarde l'indice du joueur IA.
     indiceJoueurIA = partie.joueurCourant
 
-    # L'IA tente toutes les directions et va choisir celle dont le minMax renvoie le plus grand
-    # score.
+    # L'IA tente toutes les directions et va choisir celle dont le minMax renvoie
+    # le plus grand score.
     valeurOptimale = 0
     directionChoisie = ""
 
